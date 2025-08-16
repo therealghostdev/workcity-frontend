@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserDiscovery } from "@/components/user-discovery";
+import { Navigation } from "@/components/navigation";
 import {
   Send,
   LogOut,
@@ -296,311 +297,317 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-screen flex bg-background">
-      {/* Sidebar */}
-      <div className="w-80 border-r bg-card flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-                <MessageCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+    <div className="h-screen flex flex-col bg-background">
+      <Navigation />
+
+      <div className="flex-1 flex bg-background">
+        {/* Sidebar */}
+        <div className="w-80 border-r bg-card flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <MessageCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h1 className="font-semibold">Chat</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Welcome, {user?.username}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-semibold">Workcity Chat</h1>
-                <p className="text-sm text-muted-foreground">
-                  Welcome, {user.username}
-                </p>
-              </div>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
 
-          {/* User info */}
-          <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-            <Avatar className="h-10 w-10">
-              <AvatarFallback>
-                {user.username.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{user.username}</span>
-                <Badge
-                  className={roleColors[user.role as keyof typeof roleColors]}
-                >
-                  {user.role}
-                </Badge>
-              </div>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Circle className="h-2 w-2 fill-green-500 text-green-500" />
-                Online
-              </div>
-            </div>
-          </div>
-
-          {/* Demo Banner */}
-          <div className="mt-4">
-            <DemoBanner />
-          </div>
-        </div>
-
-        {/* Search */}
-        <div className="p-4 border-b">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search conversations..." className="pl-10" />
-          </div>
-        </div>
-
-        {/* Conversations */}
-        <ScrollArea className="flex-1">
-          <div className="p-2">
-            <div className="p-3 mb-2">
-              {showUserDiscovery ? (
-                <div className="mb-4">
-                  <UserDiscovery
-                    onConversationCreated={async () => {
-                      // Refresh conversations when a new one is created
-                      const conversationsResult =
-                        await apiClient.getConversations();
-                      if (
-                        conversationsResult.success &&
-                        Array.isArray(conversationsResult)
-                      ) {
-                        setConversations(conversationsResult);
-                      }
-                      setShowUserDiscovery(false);
-                    }}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowUserDiscovery(false)}
-                    className="w-full mt-2"
+            {/* User info */}
+            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+              <Avatar className="h-10 w-10">
+                <AvatarFallback>
+                  {user?.username.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{user?.username}</span>
+                  <Badge
+                    className={
+                      roleColors[user?.role as keyof typeof roleColors]
+                    }
                   >
-                    Cancel
+                    {user?.role}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Circle className="h-2 w-2 fill-green-500 text-green-500" />
+                  Online
+                </div>
+              </div>
+            </div>
+
+            {/* Demo Banner */}
+            <div className="mt-4">
+              <DemoBanner />
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="p-4 border-b">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search conversations..." className="pl-10" />
+            </div>
+          </div>
+
+          {/* Conversations */}
+          <ScrollArea className="flex-1">
+            <div className="p-2">
+              <div className="p-3 mb-2">
+                {showUserDiscovery ? (
+                  <div className="mb-4">
+                    <UserDiscovery
+                      onConversationCreated={async () => {
+                        // Refresh conversations when a new one is created
+                        const conversationsResult =
+                          await apiClient.getConversations();
+                        if (
+                          conversationsResult.success &&
+                          Array.isArray(conversationsResult)
+                        ) {
+                          setConversations(conversationsResult);
+                        }
+                        setShowUserDiscovery(false);
+                      }}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowUserDiscovery(false)}
+                      className="w-full mt-2"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2 bg-transparent"
+                    size="sm"
+                    onClick={() => setShowUserDiscovery(true)}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Start New Chat
                   </Button>
+                )}
+              </div>
+
+              {conversations.length === 0 ? (
+                <div className="p-4 text-center text-muted-foreground">
+                  <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No conversations yet</p>
+                  <p className="text-xs">Start a new chat to begin</p>
                 </div>
               ) : (
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 bg-transparent"
-                  size="sm"
-                  onClick={() => setShowUserDiscovery(true)}
-                >
-                  <Plus className="h-4 w-4" />
-                  Start New Chat
-                </Button>
-              )}
-            </div>
-
-            {conversations.length === 0 ? (
-              <div className="p-4 text-center text-muted-foreground">
-                <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No conversations yet</p>
-                <p className="text-xs">Start a new chat to begin</p>
-              </div>
-            ) : (
-              conversations.map((conversation) => {
-                const Icon =
-                  roleIcons[conversation.role as keyof typeof roleIcons];
-                return (
-                  <div
-                    key={conversation.id}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted ${
-                      selectedConversation?.id === conversation.id
-                        ? "bg-muted"
-                        : ""
-                    }`}
-                    onClick={() => setSelectedConversation(conversation)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <Avatar className="h-10 w-10">
-                          <AvatarFallback>
-                            {Icon &&
-                              React.createElement(Icon, {
-                                className: "h-5 w-5",
-                              })}
-                          </AvatarFallback>
-                        </Avatar>
-                        {conversation.online && (
-                          <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
+                conversations.map((conversation) => {
+                  const Icon =
+                    roleIcons[conversation.role as keyof typeof roleIcons];
+                  return (
+                    <div
+                      key={conversation.id}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted ${
+                        selectedConversation?.id === conversation.id
+                          ? "bg-muted"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedConversation(conversation)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback>
+                              {Icon &&
+                                React.createElement(Icon, {
+                                  className: "h-5 w-5",
+                                })}
+                            </AvatarFallback>
+                          </Avatar>
+                          {conversation.online && (
+                            <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium truncate">
+                              {conversation.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {conversation.timestamp}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {conversation.lastMessage}
+                          </p>
+                        </div>
+                        {conversation.unread > 0 && (
+                          <Badge
+                            variant="destructive"
+                            className="h-5 w-5 p-0 flex items-center justify-center text-xs"
+                          >
+                            {conversation.unread}
+                          </Badge>
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium truncate">
-                            {conversation.name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {conversation.timestamp}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {conversation.lastMessage}
-                        </p>
-                      </div>
-                      {conversation.unread > 0 && (
-                        <Badge
-                          variant="destructive"
-                          className="h-5 w-5 p-0 flex items-center justify-center text-xs"
-                        >
-                          {conversation.unread}
-                        </Badge>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col">
+          {selectedConversation ? (
+            <>
+              {/* Chat Header */}
+              <div className="p-4 border-b bg-card">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback>
+                          {roleIcons[
+                            selectedConversation.role as keyof typeof roleIcons
+                          ] &&
+                            React.createElement(
+                              roleIcons[
+                                selectedConversation.role as keyof typeof roleIcons
+                              ],
+                              {
+                                className: "h-5 w-5",
+                              }
+                            )}
+                        </AvatarFallback>
+                      </Avatar>
+                      {selectedConversation.online && (
+                        <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
                       )}
                     </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-
-      {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {selectedConversation ? (
-          <>
-            {/* Chat Header */}
-            <div className="p-4 border-b bg-card">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback>
-                        {roleIcons[
-                          selectedConversation.role as keyof typeof roleIcons
-                        ] &&
-                          React.createElement(
-                            roleIcons[
-                              selectedConversation.role as keyof typeof roleIcons
-                            ],
-                            {
-                              className: "h-5 w-5",
-                            }
-                          )}
-                      </AvatarFallback>
-                    </Avatar>
-                    {selectedConversation.online && (
-                      <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
-                    )}
-                  </div>
-                  <div>
-                    <h2 className="font-semibold">
-                      {selectedConversation.name}
-                    </h2>
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        className={
-                          roleColors[
-                            selectedConversation.role as keyof typeof roleColors
-                          ]
-                        }
-                      >
-                        {selectedConversation.role}
-                      </Badge>
-                      <span className="text-sm text-muted-foreground">
-                        {selectedConversation.online ? "Online" : "Offline"}
-                      </span>
+                    <div>
+                      <h2 className="font-semibold">
+                        {selectedConversation.name}
+                      </h2>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className={
+                            roleColors[
+                              selectedConversation.role as keyof typeof roleColors
+                            ]
+                          }
+                        >
+                          {selectedConversation.role}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {selectedConversation.online ? "Online" : "Offline"}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-4 w-4" />
+                  </Button>
                 </div>
-                <Button variant="ghost" size="sm">
-                  <Settings className="h-4 w-4" />
-                </Button>
               </div>
-            </div>
 
-            {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.isOwn ? "justify-end" : "justify-start"
-                    }`}
-                  >
+              {/* Messages */}
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {messages.map((message) => (
                     <div
-                      className={`max-w-xs lg:max-w-md ${
-                        message.isOwn ? "order-2" : "order-1"
+                      key={message.id}
+                      className={`flex ${
+                        message.isOwn ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
-                        className={`p-3 rounded-lg ${
-                          message.isOwn
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
+                        className={`max-w-xs lg:max-w-md ${
+                          message.isOwn ? "order-2" : "order-1"
                         }`}
                       >
-                        <p className="text-sm">{message.content}</p>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1 px-1">
-                        {formatTime(message.timestamp)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="max-w-xs lg:max-w-md">
-                      <div className="p-3 rounded-lg bg-muted">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
-                          <div
-                            className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                            style={{ animationDelay: "0.1s" }}
-                          />
-                          <div
-                            className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                            style={{ animationDelay: "0.2s" }}
-                          />
+                        <div
+                          className={`p-3 rounded-lg ${
+                            message.isOwn
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted"
+                          }`}
+                        >
+                          <p className="text-sm">{message.content}</p>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1 px-1">
+                          {formatTime(message.timestamp)}
+                        </p>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1 px-1">
-                        {selectedConversation.name} is typing...
-                      </p>
                     </div>
-                  </div>
-                )}
+                  ))}
 
-                <div ref={messagesEndRef} />
+                  {isTyping && (
+                    <div className="flex justify-start">
+                      <div className="max-w-xs lg:max-w-md">
+                        <div className="p-3 rounded-lg bg-muted">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
+                            <div
+                              className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                              style={{ animationDelay: "0.1s" }}
+                            />
+                            <div
+                              className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                              style={{ animationDelay: "0.2s" }}
+                            />
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 px-1">
+                          {selectedConversation.name} is typing...
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+
+              {/* Message Input */}
+              <div className="p-4 border-t bg-card">
+                <form onSubmit={handleSendMessage} className="flex gap-2">
+                  <Input
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-1"
+                  />
+                  <Button type="submit" disabled={!newMessage.trim()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
               </div>
-            </ScrollArea>
-
-            {/* Message Input */}
-            <div className="p-4 border-t bg-card">
-              <form onSubmit={handleSendMessage} className="flex gap-2">
-                <Input
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1"
-                />
-                <Button type="submit" disabled={!newMessage.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">
+                  Select a conversation
+                </h3>
+                <p className="text-muted-foreground">
+                  Choose a conversation from the sidebar to start chatting
+                </p>
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">
-                Select a conversation
-              </h3>
-              <p className="text-muted-foreground">
-                Choose a conversation from the sidebar to start chatting
-              </p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
